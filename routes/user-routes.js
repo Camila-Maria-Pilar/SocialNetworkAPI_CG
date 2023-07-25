@@ -1,3 +1,4 @@
+
 const router = require('express').Router();
 const {
   getAllUsers,
@@ -7,7 +8,7 @@ const {
   deleteUser,
   addFriend,
   removeFriend,
-} = require('../controllers/user-controller');
+ } = require('../controllers/user-controller');
 
 // GET all users
 router.get('/', getAllUsers);

@@ -3,6 +3,28 @@ const moment = require('moment');
 
 const { Schema } = mongoose;
 
+// Define the Reaction sub-schema
+const reactionSchema = new Schema({
+  reactionId: {
+    type: Schema.Types.ObjectId,
+    default: () => new mongoose.Types.ObjectId(),
+  },
+  reactionBody: {
+    type: String,
+    required: true,
+    maxlength: 280,
+  },
+  username: {
+    type: String,
+    required: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+    get: (createdAt) => moment(createdAt).format('YYYY-MM-DD HH:mm:ss'),
+  },
+});
+
 const thoughtSchema = new Schema({
   thoughtText: {
     type: String,
@@ -13,18 +35,13 @@ const thoughtSchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-    get: (createdAt) => moment(createdAt).format('YYYY-MM-DD hh:mm:ss'),
+    get: (createdAt) => moment(createdAt).format('YYYY-MM-DD HH:mm:ss'),
   },
   username: {
     type: String,
     required: true,
   },
-  reactions: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'Reaction', // Referencing the Reaction model
-    },
-  ],
+  reactions: [reactionSchema], // Use the Reaction sub-schema
 },
 {
   toJSON: {
