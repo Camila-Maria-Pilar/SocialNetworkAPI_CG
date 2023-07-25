@@ -34,7 +34,8 @@ The following animations show examples of the application's API routes being tes
 Getting Started
 For use guidence, please watch a Walkthrough Video in the folloiwng link:
 
-https://drive.google.com/file/d/1XQ1xbXJl7QsOlR-YiTEnGu-gjhZaxG8T/view?usp=sharing
+https://drive.google.com/file/d/1WPbKnqC-0v8A6xIzAMvGOGk4eLj0RXgb/view?usp=sharing
+
 
 For More Information
 
