@@ -8,21 +8,27 @@ const PORT = process.env.PORT || 3001;
 app.use(express.json());
 
 // Connect to MongoDB
-mongoose.connect('mongodb://127.0.0.1:27017/social_network_db', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true,
-  useFindAndModify: false,
-});
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/social_network_db';
 
-// Import and use the user and thought routes
-const userRoutes = require('./routes/user-routes');
-const thoughtRoutes = require('./routes/thought-routes');
+mongoose
+  .connect(MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log('Connected to MongoDB!');
+    // Import and use the user and thought routes
+    const userRoutes = require('./routes/user-routes');
+    const thoughtRoutes = require('./routes/thought-routes');
 
-app.use('/api/users', userRoutes);
-app.use('/api/thoughts', thoughtRoutes);
+    app.use('/api/users', userRoutes);
+    app.use('/api/thoughts', thoughtRoutes);
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`App listening at http://localhost:${PORT}`);
-});
+    // Start the server
+    app.listen(PORT, () => {
+      console.log(`App listening at http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error('Error connecting to MongoDB:', err.message);
+  });

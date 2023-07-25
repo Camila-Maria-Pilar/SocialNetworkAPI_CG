@@ -1,32 +1,89 @@
 const Thought = require('../models/Thought');
 
-// Controller functions (implement these)
-const getAllThoughts = (req, res) => {
-  // Implement logic to get all thoughts
+const getAllThoughts = async (req, res) => {
+  try {
+    const thoughts = await Thought.find();
+    res.json(thoughts);
+  } catch (err) {
+    res.status(500).json(err);
+  }
 };
 
-const getThoughtById = (req, res) => {
-  // Implement logic to get a single thought by _id
+const getThoughtById = async (req, res) => {
+  try {
+    const thought = await Thought.findById(req.params.id);
+    res.json(thought);
+  } catch (err) {
+    res.status(500).json(err);
+  }
 };
 
-const createThought = (req, res) => {
-  // Implement logic to create a new thought
+const createThought = async (req, res) => {
+  try {
+    const { thoughtText, username } = req.body;
+    const newThought = await Thought.create({ thoughtText, username });
+
+    // Add the new thought's _id to the associated user's thoughts array field
+    const user = await User.findOneAndUpdate(
+      { username },
+      { $push: { thoughts: newThought._id } },
+      { new: true }
+    );
+
+    res.json(newThought);
+  } catch (err) {
+    res.status(400).json(err);
+  }
 };
 
-const updateThought = (req, res) => {
-  // Implement logic to update a thought by _id
+const updateThought = async (req, res) => {
+  try {
+    const updatedThought = await Thought.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+    res.json(updatedThought);
+  } catch (err) {
+    res.status(400).json(err);
+  }
 };
 
-const deleteThought = (req, res) => {
-  // Implement logic to delete a thought by _id
+const deleteThought = async (req, res) => {
+  try {
+    const deletedThought = await Thought.findByIdAndRemove(req.params.id);
+    res.json(deletedThought);
+  } catch (err) {
+    res.status(400).json(err);
+  }
 };
 
-const createReaction = (req, res) => {
-  // Implement logic to create a reaction in a thought's reactions array field
+const createReaction = async (req, res) => {
+  try {
+    const { thoughtId } = req.params;
+    const thought = await Thought.findByIdAndUpdate(
+      thoughtId,
+      { $push: { reactions: req.body } },
+      { new: true }
+    );
+    res.json(thought);
+  } catch (err) {
+    res.status(400).json(err);
+  }
 };
 
-const deleteReaction = (req, res) => {
-  // Implement logic to pull and remove a reaction by the reactionId value
+const deleteReaction = async (req, res) => {
+  try {
+    const { thoughtId, reactionId } = req.params;
+    const thought = await Thought.findByIdAndUpdate(
+      thoughtId,
+      { $pull: { reactions: { reactionId } } },
+      { new: true }
+    );
+    res.json(thought);
+  } catch (err) {
+    res.status(400).json(err);
+  }
 };
 
 module.exports = {
